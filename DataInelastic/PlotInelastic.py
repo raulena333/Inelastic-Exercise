@@ -1,10 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.pylab as pylab
-import glob 
-import os  
 
-# Set plot parameters
+# Configuración de los parámetros del gráfico
 params = {
     'xtick.labelsize': 17,
     'ytick.labelsize': 17,
@@ -12,40 +10,63 @@ params = {
     'axes.labelsize': 18,
     'legend.fontsize': 16
 }
-pylab.rcParams.update(params)  # Apply the parameter updates
+pylab.rcParams.update(params)
 
-# Define file pattern and colors
-file_pattern = "./DataInelastic/inelastic_2H116Sn_183MeV*.txt"
-colors = ['red', 'blue', 'green', 'orange', 'purple', 'brown'] 
+# Cargar datos experimentales
+data_exp = np.loadtxt("exforSNinelastic.txt")
+x_exp = data_exp[:, 0]
+y_exp = data_exp[:, 1]
 
-# Find all matching files
-files = sorted(glob.glob(file_pattern))
+data_exp = np.loadtxt("DataInelastic/inelastic_2H116Sn_183MeV.txt")
+x = data_exp[:, 0]
+y = data_exp[:, 1]
 
-# Check if files are found
-if len(files) == 0:
-    raise FileNotFoundError(f"No files matching the pattern {file_pattern} were found.")
+# Cargar datos teóricos de los otros archivos
+file1 = "DataInelastic/inelastic_2H116Sn_183MeVNoCoulomb.txt"
+data1 = np.loadtxt(file1)
+x1 = data1[:, 0]
+y1 = data1[:, 1]
 
-data_exp = np.loadtxt("ExperimentalData.txt")
+file2 = "DataInelastic/inelastic_2H116Sn_183MeVNoNuclear.txt"
+data2 = np.loadtxt(file2)
+x2 = data2[:, 0]
+y2 = data2[:, 1]
 
-# Initialize the plot
 plt.figure(figsize=(10, 6))
+plt.plot(x_exp, y_exp, 'r--', label='EXFOR data')
+plt.plot(x, y, color = "black", label='Both')
+plt.plot(x1, y1, 'b-', label='No Coulomb deformation')
+plt.plot(x2, y2, 'g-', label='No Nuclear deformation')
 
-# Iterate through files and plot the data
-for i, file in enumerate(files):
-    data = np.loadtxt(file, skiprows = 1) 
-    x = data[:, 0]  
-    y = data[:, 1]  
-    # Extract the distinguishing part of the file name
-    label = os.path.splitext(os.path.basename(file))[0].replace("inelastic_2H116Sn_183MeV", "")
-    plt.plot(x, y, label=label, color=colors[i % len(colors)])
-plt.plot(data_exp[:, 0], data_exp[:, 1], color = "black", label= "Experimental", linestyle = "--")
-
-# Customize the plot
-plt.xlabel(r"$\theta$ (deg)")  
-plt.ylabel(r"$\sigma_{inel}$ (mb/sr)") 
-plt.yscale("log")  
+# Customize plot
+plt.xlabel(r"$\theta$ (deg)")
+plt.ylabel(r"$\sigma_{ine}$ (mb/sr)")
 plt.legend()
+plt.semilogy()
+plt.savefig("DataInelastic/ComparingPotentialDeformation.pdf")
+plt.close()
 
-# Save the plot as a PDF
-plt.savefig("./DataInelastic/InelasticScattering_All.pdf")
-plt.show() 
+# Cargar datos teóricos de los otros archivos
+file1 = "DataInelastic/inelastic_2H116Sn_183MeVOnlyIm.txt"
+data1 = np.loadtxt(file1)
+x1 = data1[:, 0]
+y1 = data1[:, 1]
+
+file2 = "DataInelastic/inelastic_2H116Sn_183MeVOnlyRe.txt"
+data2 = np.loadtxt(file2)
+x2 = data2[:, 0]
+y2 = data2[:, 1]
+
+plt.figure(figsize=(10, 6))
+plt.plot(x_exp, y_exp, 'r--', label='EXFOR data')
+plt.plot(x, y, color = "black", label='Both')
+plt.plot(x1, y1, 'b-', label='No Real deformation')
+plt.plot(x2, y2, 'g-', label='No Imaginary deformation')
+
+# Customize plot
+plt.xlabel(r"$\theta$ (deg)")
+plt.ylabel(r"$\sigma_{ine}$ (mb/sr)")
+plt.legend()
+plt.semilogy()
+plt.savefig("DataInelastic/ComparingNuclearPotentialDeformation.pdf")
+plt.close()

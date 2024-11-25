@@ -12,18 +12,18 @@ params = {
 pylab.rcParams.update(params)  # Aplicar los cambios
 
 # Load potential values
-data = np.loadtxt('inelastic_2H116Sn_183MeV0.txt', skiprows=2)
+data = np.loadtxt('inelastic_2H116Sn_183MeV.txt', skiprows=2)
 theta = data[:, 0] 
 ruth_cross = data[:, 1]
 
-data_exp = np.loadtxt("ExperimentalData.txt", skiprows = 1)
+data_exp = np.loadtxt("exforSNinelastic.txt", skiprows = 1)
 theta0 = data_exp[:, 0]
 ruth_cross0 = data_exp[:, 1]
 
 # Plot the potentials
 plt.figure(figsize=(10, 6))
 plt.plot(theta, ruth_cross, color = "black", label = "Theorical data (Excited)")
-plt.plot(theta0, ruth_cross0, linestyle ="--",  color = "red", label = "Experimental data")
+plt.plot(theta0, ruth_cross0, linestyle ="--",  color = "red", label = "EXFOR data")
 
 # Customize plot
 plt.xlabel(r"$\theta$ (deg)")
